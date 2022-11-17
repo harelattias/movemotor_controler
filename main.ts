@@ -1,3 +1,11 @@
+input.onButtonPressed(Button.A, function () {
+    radio.sendString("beep")
+    basic.showIcon(IconNames.Happy)
+})
+input.onButtonPressed(Button.B, function () {
+    radio.sendString("beeeeeeeep")
+    basic.showIcon(IconNames.Sad)
+})
 radio.onReceivedValue(function (name, value) {
     serial.writeValue(name, value)
 })
