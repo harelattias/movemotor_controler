@@ -16,4 +16,6 @@ basic.forever(function () {
 loops.everyInterval(250, function () {
     radio.sendValue("acc_y", input.acceleration(Dimension.Y))
     serial.writeValue("acc_y", input.acceleration(Dimension.Y))
+    radio.sendValue("acc_x", input.acceleration(Dimension.X))
+    serial.writeValue("acc_x", input.acceleration(Dimension.X))
 })
