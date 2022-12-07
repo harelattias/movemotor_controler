@@ -9,13 +9,17 @@ input.onButtonPressed(Button.B, function () {
 radio.onReceivedValue(function (name, value) {
     serial.writeValue(name, value)
 })
+let speed_right = 0
+let speed_fwd = 0
 radio.setGroup(111)
 basic.forever(function () {
 	
 })
 loops.everyInterval(250, function () {
-    radio.sendValue("acc_y", input.acceleration(Dimension.Y))
-    serial.writeValue("acc_y", input.acceleration(Dimension.Y))
-    radio.sendValue("acc_x", input.acceleration(Dimension.X))
-    serial.writeValue("acc_x", input.acceleration(Dimension.X))
+    speed_fwd = Math.round(input.acceleration(Dimension.Y) / -10.23)
+    radio.sendValue("cmd_fwd", speed_fwd)
+    serial.writeValue("forward", speed_fwd)
+    speed_right = Math.round(input.acceleration(Dimension.X) / 10.23)
+    radio.sendValue("cmd_rgt", speed_right)
+    serial.writeValue("right", speed_right)
 })

@@ -12,6 +12,8 @@ def on_received_value(name, value):
     serial.write_value(name, value)
 radio.on_received_value(on_received_value)
 
+speed_right = 0
+speed_fwd = 0
 radio.set_group(111)
 
 def on_forever():
@@ -19,8 +21,11 @@ def on_forever():
 basic.forever(on_forever)
 
 def on_every_interval():
-    radio.send_value("acc_y", input.acceleration(Dimension.Y))
-    serial.write_value("acc_y", input.acceleration(Dimension.Y))
-    radio.send_value("acc_x", input.acceleration(Dimension.X))
-    serial.write_value("acc_x", input.acceleration(Dimension.X))
+    global speed_fwd, speed_right
+    speed_fwd = Math.round(input.acceleration(Dimension.Y) / -10.23)
+    radio.send_value("speed_forward", speed_fwd)
+    serial.write_value("acc_y", speed_fwd)
+    speed_right = Math.round(input.acceleration(Dimension.X) / 10.23)
+    radio.send_value("speed_right", speed_right)
+    serial.write_value("acc_x", speed_right)
 loops.every_interval(250, on_every_interval)
