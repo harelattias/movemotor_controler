@@ -29,9 +29,22 @@ let speed_right_motor = 0
 let speed_right = 0
 let speed_fwd = 0
 let is_joystik = 0
+is_joystik = 0
+basic.showLeds(`
+    . . . . .
+    . # # # .
+    . # # # .
+    . # # # .
+    . . . . .
+    `)
 radio.setGroup(111)
 basic.forever(function () {
-	
+    if (GHBit.Rocker(GHBit.enRocker.Press)) {
+        radio.sendString("beep")
+    }
+    if (GHBit.Button(GHBit.enButton.B4, GHBit.enButtonState.Press)) {
+        radio.sendString("beep")
+    }
 })
 loops.everyInterval(250, function () {
     if (is_joystik == 0) {
