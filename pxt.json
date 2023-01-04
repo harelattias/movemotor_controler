@@ -4,7 +4,8 @@
     "dependencies": {
         "core": "*",
         "radio": "*",
-        "microphone": "*"
+        "microphone": "*",
+        "GHBit": "github:lzty634158/GHBit#bbbe5f812211ee7b1576bbb046b981339dca5bbc"
     },
     "files": [
         "main.blocks",
