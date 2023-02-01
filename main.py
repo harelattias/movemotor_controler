@@ -8,6 +8,7 @@ def on_button_pressed_a():
                 . # # # .
                 . # # # .
     """)
+    show_gear()
 input.on_button_pressed(Button.A, on_button_pressed_a)
 
 def on_button_pressed_b():
@@ -20,6 +21,7 @@ def on_button_pressed_b():
                 # # # # #
                 # # . # #
     """)
+    show_gear()
 input.on_button_pressed(Button.B, on_button_pressed_b)
 
 def show_gear():
@@ -62,15 +64,23 @@ basic.show_leds("""
 """)
 radio.set_group(111)
 gear = 2
+show_gear()
 speed_multiplier = 1
+stop_by_dist = 1
+led.plot(4, 0)
 
 def on_forever():
     if GHBit.button(GHBit.enButton.B4, GHBit.enButtonState.REALSE):
         radio.send_string("off_off")
-    if GHBit.rocker(GHBit.enRocker.PRESS):
-        radio.send_string("beep")
+        serial.write_line("off_off")
     if GHBit.button(GHBit.enButton.B4, GHBit.enButtonState.PRESS):
         radio.send_string("off_lig")
+    if GHBit.button(GHBit.enButton.B1, GHBit.enButtonState.REALSE):
+        radio.send_string("on_sen")
+    if GHBit.button(GHBit.enButton.B1, GHBit.enButtonState.PRESS):
+        radio.send_string("off_sen")
+    if GHBit.rocker(GHBit.enRocker.PRESS):
+        radio.send_string("beep")
 basic.forever(on_forever)
 
 def on_every_interval():
@@ -107,6 +117,20 @@ def on_every_interval():
 loops.every_interval(250, on_every_interval)
 
 def on_every_interval2():
+    global stop_by_dist
+    if GHBit.button(GHBit.enButton.B1, GHBit.enButtonState.PRESS):
+        stop_by_dist += 1
+        if stop_by_dist > 1:
+            stop_by_dist = 0
+    if stop_by_dist == 0:
+        radio.send_string("off_dis")
+        led.unplot(4, 0)
+    if stop_by_dist == 1:
+        radio.send_string("on_dis")
+        led.plot(4, 0)
+loops.every_interval(200, on_every_interval2)
+
+def on_every_interval3():
     global gear, speed_multiplier
     if GHBit.button(GHBit.enButton.B2, GHBit.enButtonState.PRESS):
         gear += 1
@@ -126,4 +150,4 @@ def on_every_interval2():
         speed_multiplier = 1
     if gear == 3:
         speed_multiplier = 1.5
-loops.every_interval(200, on_every_interval2)
+loops.every_interval(200, on_every_interval3)

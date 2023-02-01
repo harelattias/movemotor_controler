@@ -7,6 +7,7 @@ input.onButtonPressed(Button.A, function () {
         . # # # .
         . # # # .
         `)
+    show_gear()
 })
 input.onButtonPressed(Button.B, function () {
     is_joystik = 1
@@ -17,6 +18,7 @@ input.onButtonPressed(Button.B, function () {
         # # # # #
         # # . # #
         `)
+    show_gear()
 })
 function show_gear () {
     if (gear == 1) {
@@ -59,16 +61,26 @@ basic.showLeds(`
     `)
 radio.setGroup(111)
 gear = 2
+show_gear()
 let speed_multiplier = 1
+let stop_by_dist = 1
+led.plot(4, 0)
 basic.forever(function () {
     if (GHBit.Button(GHBit.enButton.B4, GHBit.enButtonState.Realse)) {
         radio.sendString("off_off")
-    }
-    if (GHBit.Rocker(GHBit.enRocker.Press)) {
-        radio.sendString("beep")
+        serial.writeLine("off_off")
     }
     if (GHBit.Button(GHBit.enButton.B4, GHBit.enButtonState.Press)) {
         radio.sendString("off_lig")
+    }
+    if (GHBit.Button(GHBit.enButton.B1, GHBit.enButtonState.Realse)) {
+        radio.sendString("on_sen")
+    }
+    if (GHBit.Button(GHBit.enButton.B1, GHBit.enButtonState.Press)) {
+        radio.sendString("off_sen")
+    }
+    if (GHBit.Rocker(GHBit.enRocker.Press)) {
+        radio.sendString("beep")
     }
 })
 loops.everyInterval(250, function () {
@@ -109,6 +121,22 @@ loops.everyInterval(250, function () {
     serial.writeValue("rgt_spd", speed_right_motor)
     radio.sendValue("left_spd", speed_left_motor)
     serial.writeValue("left_spd", speed_left_motor)
+})
+loops.everyInterval(200, function () {
+    if (GHBit.Button(GHBit.enButton.B1, GHBit.enButtonState.Press)) {
+        stop_by_dist += 1
+        if (stop_by_dist > 1) {
+            stop_by_dist = 0
+        }
+    }
+    if (stop_by_dist == 0) {
+        radio.sendString("off_dis")
+        led.unplot(4, 0)
+    }
+    if (stop_by_dist == 1) {
+        radio.sendString("on_dis")
+        led.plot(4, 0)
+    }
 })
 loops.everyInterval(200, function () {
     if (GHBit.Button(GHBit.enButton.B2, GHBit.enButtonState.Press)) {
